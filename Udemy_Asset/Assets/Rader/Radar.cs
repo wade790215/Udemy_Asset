@@ -12,9 +12,7 @@ public class RadarObject
 public class Radar : MonoBehaviour
 {
     public Transform playerPos;
-
     float mapScale = 2.0f;
-
     public static List<RadarObject> radObjects = new List<RadarObject>();
 
     public static void RegisterRadarObject(GameObject o, Image i)
@@ -53,15 +51,23 @@ public class Radar : MonoBehaviour
 
             ro.icon.transform.SetParent(this.transform);
             RectTransform rt = this.GetComponent<RectTransform>();
-            Debug.Log(rt.pivot);
             ro.icon.transform.position = new Vector3(radarPos.x + rt.pivot.x, radarPos.z + rt.pivot.y, 0) + this.transform.position;
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         DrawRadarDots();
     }
 
+
+    public void ItemDropped(GameObject gameObject)
+    {
+        RegisterRadarObject(gameObject, gameObject.GetComponent<Icon>().icon);
+    }
+
+    public void ItemPickedUp(GameObject gameObject)
+    {
+        RemoveRadarObject(gameObject);
+    }
 }
