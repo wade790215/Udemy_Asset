@@ -6,6 +6,30 @@ public class ProcCube: Object
 {
     public enum Cubeside { BOTTOM, TOP, LEFT, RIGHT, FRONT, BACK };
 
+    static GameObject cube = new GameObject();
+
+    public static GameObject Clone(Vector3 pos)
+    {
+        if(cube == null)
+        {
+            CreateCube(Vector3.zero);
+            cube.SetActive(false);  
+        }
+
+        GameObject cubeClone = new GameObject();
+        cubeClone.AddComponent<MeshFilter>();
+        cubeClone.AddComponent<MeshRenderer>();
+        cubeClone.GetComponent<MeshFilter>().mesh = cube.GetComponent<MeshFilter>().mesh;
+        MeshRenderer meshRenderer = cubeClone.GetComponent<MeshRenderer>();
+        meshRenderer.material = cube.GetComponent<MeshRenderer>().material;
+        cubeClone.AddComponent<Rigidbody>();
+        cubeClone.AddComponent<BoxCollider>();
+        cubeClone.name = "ProceduralCube";
+        cubeClone.gameObject.SetActive(true);
+        cubeClone.transform.position = pos;
+        return cubeClone;   
+    }
+
     public static void CreateQuad(Cubeside side, GameObject parent)
     {
         Mesh mesh = new Mesh();
@@ -93,7 +117,6 @@ public class ProcCube: Object
 
     public static void CreateCube(Vector3 pos)
     {
-        GameObject cube = new GameObject();
         cube.AddComponent<MeshFilter>();
         cube.AddComponent<MeshRenderer>();
         CreateQuad(Cubeside.FRONT, cube);
@@ -128,5 +151,15 @@ public class ProcCube: Object
             i++; 
         }
 
+        cube.GetComponent<MeshFilter>().mesh = new Mesh();
+        cube.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
+        cube.GetComponent<MeshFilter>().mesh.name = "ProceduralCube" + Time.realtimeSinceStartup;
+        MeshRenderer meshRenderer = cube.GetComponent<MeshRenderer>();
+        meshRenderer.material = new Material(Shader.Find("Holistic/Plasma"));
+        cube.AddComponent<Rigidbody>(); 
+        cube.AddComponent<BoxCollider>();
+        cube.name = "ProceduralCube";
+        cube.gameObject.SetActive(true);    
+        cube.transform.position = pos;
     }
 }
